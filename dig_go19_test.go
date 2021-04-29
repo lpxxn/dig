@@ -116,4 +116,5 @@ func TestEndToEndSuccessWithAliases(t *testing.T) {
 		}), "invoke should succeed, pulling out two named instances")
 	})
 
+
 }

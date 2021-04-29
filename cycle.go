@@ -62,6 +62,7 @@ func IsCycleDetected(err error) bool {
 	return ok
 }
 
+// 参数 k 是方法的返回传的反射信息
 func verifyAcyclic(c containerStore, n provider, k key) error {
 	visited := make(map[key]struct{})
 	err := detectCycles(n, c, []cycleEntry{
@@ -73,8 +74,13 @@ func verifyAcyclic(c containerStore, n provider, k key) error {
 	return err
 }
 
+// n 是新的node，没有加入到container里的对象
 func detectCycles(n provider, c containerStore, path []cycleEntry, visited map[key]struct{}) error {
 	var err error
+	// n.ParamList，方法的签名，也就是入参。
+	// 查看有没有循环线上服务是查看新的node对象里，根据入参所有的param得到所有的providers，
+	// 是否和return里的参数组成path里的的的key有一样的数据，传入参数和返回参数一样。
+	// TODO: 一个参数不能即是输入又是输出
 	walkParam(n.ParamList(), paramVisitorFunc(func(param param) bool {
 		if err != nil {
 			return false

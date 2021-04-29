@@ -483,10 +483,11 @@ func (c *Container) provide(ctor interface{}, opts provideOptions) error {
 	if len(keys) == 0 {
 		return errf("%v must provide at least one non-error type", ctype)
 	}
-
+	// keys 就是 resultList 里的 参数，以返回的参数为主，来找到 c.providers
 	for k := range keys {
 		c.isVerifiedAcyclic = false
 		oldProviders := c.providers[k]
+		// providers 里的key 是 result 里的 key
 		c.providers[k] = append(c.providers[k], n)
 
 		if c.deferAcyclicVerification {
@@ -581,7 +582,7 @@ func (cv connectionVisitor) Visit(res result) resultVisitor {
 	switch r := res.(type) {
 	case resultSingle:
 		k := key{name: r.Name, t: r.Type}
-
+		// 一个return里不能有两个一样的参数 key
 		if conflict, ok := cv.keyPaths[k]; ok {
 			*cv.err = errf(
 				"cannot provide %v from %v", k, path,
@@ -589,7 +590,8 @@ func (cv connectionVisitor) Visit(res result) resultVisitor {
 			)
 			return nil
 		}
-
+		// 如果是 resultSingle，就不能有多个providers
+		// 也就是说不能有多个方法提供同一个返回参数
 		if ps := cv.c.providers[k]; len(ps) > 0 {
 			cons := make([]string, len(ps))
 			for i, p := range ps {
