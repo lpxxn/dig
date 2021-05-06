@@ -590,7 +590,7 @@ func (cv connectionVisitor) Visit(res result) resultVisitor {
 			)
 			return nil
 		}
-		// 如果是 resultSingle，就不能有多个providers
+		// 如果是 resultSingle 类型，就不能有多个providers
 		// 也就是说不能有多个方法提供同一个返回参数
 		if ps := cv.c.providers[k]; len(ps) > 0 {
 			cons := make([]string, len(ps))
